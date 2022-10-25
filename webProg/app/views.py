@@ -70,12 +70,12 @@ def logform(request):
 
 class BookListView(ListView):
     model = Book
-    paginate_by = 3
+    paginate_by = 10
     context_object_name = 'book_list'
     template_name = 'index.html'
 
     def get(self, request):
-        paginate_by = request.GET.get('paginate_by')
+        paginate_by = request.GET.get('paginate_by', 10) or 10
         data = self.model.objects.all()
 
         paginator = Paginator(data, paginate_by)
@@ -156,38 +156,4 @@ def delete(request, pk, template_name='delete.html'):
     return redirect('logform')
 
 
-"""def profile(request, pk, template_name='profile.html'):
-    if authentificate(request) and (isUser(request.session['username']) or isAdmin(request.session['username'])):
 
-        role = None
-        isAuthentificated = 'username' in request.session
-        if 'role' in request.session:
-            role = request.session['role']
-
-        user = get_object_or_404(User, pk=pk)
-        form = UserForm(request.POST or None, instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('index')
-        return render(request, template_name, {'form': form, 'role': role,
-                                               'isAuth': isAuthentificated})
-    return redirect('logform')"""
-
-
-def profile(request, template_name='profile.html'):
-    if authentificate(request) and (isUser(request.session['username']) or isAdmin(request.session['username'])):
-
-        role = None
-        isAuthentificated = 'username' in request.session
-        if 'role' in request.session:
-            role = request.session['role']
-
-        if request.method == 'POST':
-            form = UserForm(instance=request.session['username'])
-
-            if form.is_valid():
-                form.save()
-                return redirect('index')
-            return render(request, template_name, {'form': form, 'role': role,
-                                                   'isAuth': isAuthentificated})
-    return redirect('logform')

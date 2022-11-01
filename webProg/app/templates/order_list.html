@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+	{% for order in orders %}
+		<p>Order number: {{ order.id }}</p>
+		<p>Price: {{ order.price }}</p>
+		{% for book in order.books %}
+			<div>Book name: {{ book.name }}</div>
+			<div>Book amount: {{ book.amount }}</div>
+		{% endfor %}
+	{% endfor %}
+	<a href="{% url 'index' %}">
+		<button type="button" class="btn btn-back">Back</buttom>
+	</a>
+{% endblock %}

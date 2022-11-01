@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+	<caption>Cart</caption>
+	<div class="cart">
+		{% if cart_len %}
+			<table class="table table-bordered">
+
+				<tr>
+					<td>Name</td>
+					<td>Author</td>
+					<td>Price</td>
+					<td>Amount</td>
+				</tr>
+				{% for item, book in list %}
+				<tr>
+					<td>{{ book.name }}</td>
+					<td>{{ book.author }}</td>
+					<td>{{ book.price }}</td>
+					<td>{{ item.amount }}</td>
+				</tr>
+				{% endfor %}
+			</table>
+			<div>Price: {{price}}</div>
+		{% else %}
+			<div class="cart">Empty</div>
+		{% endif %}
+		<a href="{% url 'index' %}">
+			<button type="button" class="btn btn-back">Back</button>
+		</a>
+		{% if cart_len %}
+		<form method="post" novalidate>
+			{% csrf_token %}
+			<button type="submit" class="btn btn-order">Confirm</button>
+		</form>
+		{% endif %}
+	</div>
+{% endblock %}

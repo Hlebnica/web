@@ -5,7 +5,8 @@ from django.db import models
 class Book(models.Model):
     name = models.CharField(max_length=40, blank=False, default='')
     author = models.CharField(max_length=30, blank=False, default='')
-    amount = models.FloatField(default=0.0, blank=False)
+    amount = models.IntegerField(default=0, blank=False)
+    price = models.FloatField(default=0.0, blank=False)
 
     class Meta:
         db_table = 'books'
@@ -20,3 +21,23 @@ class User(models.Model):
 
     class Meta:
         db_table = 'users'
+
+
+class CartItem(models.Model):
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    book = models.ForeignKey('Book', on_delete=models.CASCADE)
+    amount = models.IntegerField(default=0, blank=False)
+
+    class Meta:
+        db_table = 'cart_items'
+
+
+class Order(models.Model):
+    order_number = models.IntegerField(default=0, blank=False)
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    book = models.ForeignKey('Book', on_delete=models.CASCADE)
+    amount = models.IntegerField(default=0, blank=False)
+    price = models.FloatField(default=0.0, blank=False)
+
+    class Meta:
+        db_table = 'orders'

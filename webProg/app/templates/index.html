@@ -3,6 +3,26 @@
 {% csrf_token %}
 
 
+<div>
+    {% if isAuth %}
+	<a href="{% url 'logout' %}">
+		<button type="button" class="btn btn-logout">Log out</button>
+	</a>
+	<a href="{% url 'edit_user' %}">
+		<button type="button" class="btn btn-user_edit">User settings</button>
+	</a>
+	<a href="{% url 'cart' %}">
+		<button type="button" class="btn btn-cart">Cart</button>
+	</a>
+	<a href="{% url 'orders' %}">
+		<button type="button" class="btn btn-orders">Order List</button>
+	</a>
+{% else %}
+	<a href="{% url 'login' %}">
+		<button type="button" class="btn btn-login">Login</button>
+	</a>
+{% endif %}
+</div>
 <h4>Books list</h4>
 <table class="table table-bordered">
     <thead>
@@ -16,15 +36,22 @@
     <tr>
         <td>{{book.name}}</td>
         <td>{{book.author}}</td>
-        <td>{{book.amount}}</td>
-        {% if isAuth and role == "admin" %}
-        <td><a href="{%url 'edit' book.pk %}">
-            <button type=button class="btn btn-edit">edit</button>
-        </a></td>
-        <td><a href="{%url 'delete' book.pk %}">
-            <button type=button class="btn btn-delete">delete</button>
-        </a></td>
-        {% endif %}
+        <td>{{book.price}}</td>
+        {% if isAuth %}
+			{% if role == "admin" %}
+				<td><a href="{%url 'edit' book.pk %}">
+					<button type=button class="btn btn-edit">edit</button>
+				</a></td>
+				<td><a href="{%url 'delete' book.pk %}">
+					<button type=button class="btn btn-delete">delete</button>
+				</a></td>
+			{% endif %}
+			{% if book.amount %}
+				<td><a href="{%url 'add_to_cart' book.pk %}">
+					<button type=button class="btn btn-delete">add to cart</button>
+				</a></td>
+			{% endif %}
+		{% endif %}
     </tr>
     {% endfor %}
 </table>

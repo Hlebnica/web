@@ -3,6 +3,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.views.generic import ListView
 from .models import Book, User, Order, CartItem
 from .forms import BookForm, UserForm, OrderForm, CartItemForm
+from django.contrib.auth.hashers import make_password, check_password
 
 
 def register(request):
@@ -46,18 +47,18 @@ def logout(request):
 
 def login(request, template_name='login.html'):
     username = 'not logged in'
-    if request.method == 'POST':
+    if (request.method == 'POST'):
         try:
             username = request.POST['login']
             password = request.POST['password']
 
-            query = User.objects.filter(login__exact=username, password__exact=password)
+            query = User.objects.filter(login__exact=username)
+            if check_password(password, query.get().password):
+                request.session['username'] = username
+                request.session['role'] = query.get().role
+                request.session['id'] = query.get().id
+                return redirect('index')
 
-            request.session['username'] = username
-            request.session['role'] = query.get().role
-            request.session['id'] = query.get().id
-
-            return redirect('index')
         except Exception as e:
             return redirect('logform')
     return redirect('logform')

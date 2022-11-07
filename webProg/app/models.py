@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.hashers import make_password, check_password
 
 
 # Create your models here.
@@ -18,6 +19,10 @@ class User(models.Model):
     email = models.CharField(max_length=255, blank=False, default='')
     handle = models.CharField(max_length=255, blank=False, default='')
     role = models.CharField(max_length=255, blank=False, default='')
+
+    def save(self, *args, **kwargs):
+        self.password = make_password(self.password)
+        super(User, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'users'

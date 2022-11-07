@@ -13,7 +13,7 @@
 			<input type="text" id="login" name="login" maxlenght="24" size="10">
 			<label for="password">Password:</label>
 			<input type="password" id="password" name="password" maxlength="32" size="10">
-			<button href="{% url 'login' %}" type="submit">Sign In</button>
+			<button href="{% url 'login' %}" type="submit" id="sign_in_button">Sign In</button>
 			<a href="{% url 'register' %}"><button type="button" class="btn btn-register">Sign Up</button></a>
 		</form>
 		<a href="{%url 'index' %}">

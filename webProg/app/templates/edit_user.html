@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 	{% load widget_tweaks %}
-	<form method="post" novalidate>
+	<form class="reg-form" id="regform" method="post" novalidate>
 		{% csrf_token %}
 		{% for hidden_field in form.hidden_fields %}
 		{{hidden_field}}
@@ -17,6 +17,15 @@
 			{% endif %}
 			</div>
 		{% endfor %}
-		<button type="submit" class="btn btn-primary">edit</button>
+		<button type="submit" class="btn btn-primary" id="btn submit">edit</button>
 	</form>
+
+	<script>
+		let csrf = "{{ csrf_token }}"
+	</script>
+{% endblock %}
+
+{% block script %}
+	{% load static %}
+	<script src="{% static 'user_validation.js'%}"></script>
 {% endblock %}

@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.views.generic import ListView
+from django.contrib.auth.hashers import check_password
 from .models import Book, User, Order, CartItem
 from .forms import BookForm, UserForm, OrderForm, CartItemForm
-from django.contrib.auth.hashers import make_password, check_password
 
 
 def register(request):
@@ -14,6 +17,36 @@ def register(request):
             return redirect('logform')
     form = UserForm()
     return render(request, 'register.html', {'form': form})
+
+
+def check_login(request):
+    login = request.POST.get('login')
+    val = False
+    if (authentificated(request)):
+        val = (not (login == request.session['username'])) and (User.objects.filter(login__exact=login).exists())
+    else:
+        val = User.objects.filter(login__exact=login).exists()
+    data = {'login_exists': val}
+    return JsonResponse(data)
+
+
+def check_email(request):
+    email = request.POST.get('email')
+    data = {'email_correct': False}
+    try:
+        validate_email(email)
+        data['email_correct'] = True
+    except:
+        pass
+    return JsonResponse(data)
+
+
+def check_passwordlen(request):
+    password = request.POST.get('password')
+    data = {'password_correct': False}
+    if len(password) >= 6:
+        data['password_correct'] = True
+    return JsonResponse(data)
 
 
 def authentificated(request):
@@ -47,19 +80,24 @@ def logout(request):
 
 def login(request, template_name='login.html'):
     username = 'not logged in'
-    if (request.method == 'POST'):
+    if request.method == 'POST':
         try:
             username = request.POST['login']
             password = request.POST['password']
 
             query = User.objects.filter(login__exact=username)
+            print(query.get().password)
+            print("is: " + str(check_password(password, query.get().password)))
+            print("ad")
             if check_password(password, query.get().password):
+                print("here")
                 request.session['username'] = username
                 request.session['role'] = query.get().role
                 request.session['id'] = query.get().id
                 return redirect('index')
 
         except Exception as e:
+            print(e)
             return redirect('logform')
     return redirect('logform')
 
@@ -76,9 +114,10 @@ class BookListView(ListView):
 
     def get(self, request):
         paginate_by = request.GET.get('paginate_by', 10) or 10
-        data = self.model.objects.all()
+        sort_by = request.GET.get('sort_by', 'name') or 'name'
+        ordered_data = self.model.objects.order_by(sort_by)
 
-        paginator = Paginator(data, paginate_by)
+        paginator = Paginator(ordered_data, paginate_by)
         page = request.GET.get('page')
 
         role = None
@@ -213,6 +252,7 @@ def add_to_cart(request, pk, template_name='order.html'):
 def edit_user(request, template_name='edit_user.html'):
     if authentificated(request):
         user = get_object_or_404(User, pk=request.session['id'])
+        user.password = ''
         form = UserForm(request.POST or None, instance=user)
         if form.is_valid():
             form.save()

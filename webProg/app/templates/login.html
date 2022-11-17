@@ -1,25 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
-
-<html>
-	<head>
-		<title>Login</title>
-		<meta charset="utf-8">
-	</head>
-	<body>
-		<form method="post" action="login/">
-			{% csrf_token %}
-			<label for="login">Login:</label>
-			<input type="text" id="login" name="login" maxlenght="24" size="10">
-			<label for="password">Password:</label>
-			<input type="password" id="password" name="password" maxlength="32" size="10">
-			<button href="{% url 'login' %}" type="submit" id="sign_in_button">Sign In</button>
-			<a href="{% url 'register' %}"><button type="button" class="btn btn-register">Sign Up</button></a>
-		</form>
-		<a href="{%url 'index' %}">
-			<button type="button" class="btn btn-unauthorized">Back to main</button>
-		</a>
-	</body>
-</html>
-
+<form method="post" action="login/">
+	{% csrf_token %}
+	<label for="login">Login:</label>
+	<input type="text" id="login" name="login" maxlenght="24" size="10">
+	<label for="password">Password:</label>
+	<input type="password" id="password" name="password" maxlength="32" size="10">
+    <button href="{% url 'login' %}" type="submit">Sign In</button>
+	<a href="{% url 'register' %}">
+		<button type="button" class="btn btn-register">Sign Up</button>
+	</a>
+</form>
+<a href="{%url 'index' %}">
+	<button type="button" class="btn btn-unauthorized">Back to main</button>
+</a>
 {% endblock %}

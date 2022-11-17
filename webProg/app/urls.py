@@ -13,5 +13,8 @@ urlpatterns = [
     path('book/login', views.logform, name='logform'),
     path('book/login/', views.login, name='login'),
     path('book/register', views.register, name='register'),
+    path('book/check_login/', views.check_login, name='check_login'),
+    path('book/check_email/', views.check_email, name='check_email'),
+    path('book/check_password/', views.check_passwordlen, name='check_password'),
     path('book/logout', views.logout, name='logout'),
 ]
